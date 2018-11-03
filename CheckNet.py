@@ -4,36 +4,38 @@ import re
 import argparse
 import winreg as wr
 
-
 BASE_PATH = r"Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Mappings"
 
-def get_apps():
-    apps = []
-    with wr.OpenKeyEx(wr.HKEY_CURRENT_USER, BASE_PATH) as key:
-        try:
-            flag = True
-            index = 0
-            while flag:
-                apps.append(wr.EnumKey(key, index))
-                index += 1
-        except OSError:
-            flag = False
-    return apps
 
+# 获得所有程序的 SID
+def get_apps_sid():
+    sid_list = []
+    with wr.OpenKeyEx(wr.HKEY_CURRENT_USER, BASE_PATH) as key:
+        max_index = wr.QueryInfoKey(key)[0]
+        for i in range(max_index):
+            sid_list.append(wr.EnumKey(key, i))
+    return sid_list
+
+
+# 通过 SID 获取程序的详细信息，返回的数组包含信息为 (显示名Human-Readable， SID, 应用名)
 def get_apps_detail():
-    apps = get_apps()
-    app_list_detail = []
-    for app in apps:
-        app_reg_path = os.path.join(BASE_PATH, app)
+    apps_sid = get_apps_sid()
+    apps_detail = []
+    for i in apps_sid:
+        app_reg_path = os.path.join(BASE_PATH, i)
         with wr.OpenKeyEx(wr.HKEY_CURRENT_USER, app_reg_path) as key:
             app_display_name, _ = wr.QueryValueEx(key, "DisplayName")
+            # 跳过非应用程序
             if app_display_name.startswith("@{"):
                 continue
             app_name, _ = wr.QueryValueEx(key, "Moniker")
             # A touple with (app_display_name, SID, app_name)
-            app_detail = (app_display_name, app, app_name)
-            app_list_detail.append(app_detail)
-    return app_list_detail
+            app_detail = (app_display_name, i, app_name)
+            apps_detail.append(app_detail)
+    # 根据显示名进行排序，然后返回排序后的列表
+    apps_detail_sorted = sorted(apps_detail, key=lambda display_name: apps_detail[0])
+    return apps_detail_sorted
+
 
 def print_list(apps_detail):
     num = 0
@@ -49,7 +51,7 @@ if __name__ == '__main__':
     parser.add_argument("-l", action="store_true", help="仅打印所有UWP应用列表。", default=False)
     parser.add_argument("-s", action="store_true", help="打印已被添加到排除列表中的UWP应用。", default=False)
     parser.add_argument("-c", action="store_true", help="清除所有已被添加到排除列表中的UWP应用。", default=False)
-    parser.add_argument("-f", "--find", type=str,  help="通过名字搜索UWP应用（忽略大小写）。")
+    parser.add_argument("-f", "--find", type=str, help="通过名字搜索UWP应用（忽略大小写）。")
     args = parser.parse_args()
 
     if args.l:
