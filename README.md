@@ -26,7 +26,7 @@ pip install --upgrade tinify
 ```
 
 ### 简单使用
-
+使用 Timg 需要 TinyPNG 的 API key，你可以使用自己的邮箱免费注册一个，也可以使用程序中自带的 key 试用。修改 key 的方法就是修改程序中 `tinify.key` 的值。
 ```bash
 # 查看程序帮助
 python timg.py -h
