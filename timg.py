@@ -7,7 +7,7 @@ import tinify
 __version_info__ = ('2018','12','14')
 __version__ = '-'.join(__version_info__)
 
-tinify.key = "We4LQK1PKcdzUbC-9Vt2ANGuLXdaF-qu"
+tinify.key = "D1xg17yftSqsFcyzP4k6FlQMvq0KRhTz"
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('Timg')
