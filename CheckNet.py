@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
+import argparse
 import os
 import re
-import argparse
 import winreg as wr
 
 BASE_PATH = r"Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Mappings"

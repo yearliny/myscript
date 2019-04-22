@@ -6,6 +6,20 @@ CheckNet 可以简单的把Win10系统中的UWP应用添加至隔离排除列表
 
 更多使用详情可以参考我博客中写的[介绍](https://yuan.ga/enable-win10-uwp-use-system-proxy/)。
 
+### PowerShell Version
+
+对于这个任务，实际上用 PowerShell 脚本处理会更为恰当一点，我们可以用更少的代码处理同样的任务。
+```powershell
+$BASE_PATH = 'HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Mappings\'
+# 获取相关注册表信息，并进行筛选和排序
+$mapping = Get-ChildItem -Pat $BASE_PATH | Where-Object {$_.GetValue('DisplayName') -NotLike '@{*'} | Sort-Object {$_.GetValue('DisplayName')}
+# 格式化打印 APP List
+$mapping | Format-Table @{label='Num'; expression={$mapping.IndexOf($_)}}, @{label='DisplayName'; expression={$_.GetValue('DisplayName')}}
+$input = Read-Host '回复序号并回车提交，添加指定应用到排除列表中'
+CheckNetIsolation LoopbackExempt -a -n=$mapping[$input].GetValue('Moniker')
+```
+了解 PowerShell 的人可以使用上面的代码实现同样的任务，核心代码就两行，非常简洁。
+
 ## Timg
 
 > 以 TinyPNG 为基础的图片压缩处理命令行工具。
