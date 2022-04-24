@@ -1,10 +1,11 @@
 # -*- coding:utf-8 -*-
-import os
-import logging
 import argparse
+import logging
+import os
+
 import tinify
 
-__version_info__ = ('2018','12','14')
+__version_info__ = ('2018', '12', '14')
 __version__ = '-'.join(__version_info__)
 
 tinify.key = "D1xg17yftSqsFcyzP4k6FlQMvq0KRhTz"
@@ -12,16 +13,19 @@ tinify.key = "D1xg17yftSqsFcyzP4k6FlQMvq0KRhTz"
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('Timg')
 
+
 # 是否是支持的文件
 def is_support_file(file):
     _, file_extension = os.path.splitext(os.path.basename(file))
     return True if file_extension in ['.jpg', 'png'] else False
+
 
 def compress_img(target_img, optimized_img):
     source = tinify.from_file(target_img)
     logger.debug("Successfully compressed image {}".format(os.path.basename(target_img)))
     source.to_file(optimized_img)
     logger.info("Save compressed image {}".format(os.path.basename(target_img)))
+
 
 def compress_img_dir(target_path, optimized_path, recursion):
     for root, dirs, files in os.walk(target_path):
@@ -34,6 +38,7 @@ def compress_img_dir(target_path, optimized_path, recursion):
             for d in dirs:
                 return compress_img_dir(os.path.join(root, d), os.path.join(optimized_path, d), recursion)
 
+
 def compress_target(target, new_one=None, recursion=False):
     # 如果没有参数 new_one，就让其等同于 target，即覆盖源文件
     new_one = new_one if new_one else target
@@ -44,11 +49,13 @@ def compress_target(target, new_one=None, recursion=False):
     else:
         raise argparse.ArgumentTypeError("Only supports png and jpg images")
 
+
 def compression_count():
     tinify.validate()
     compressions_this_month = tinify.compression_count
     # print("{} images you have made this month.".format(compressions_this_month))
     logger.info("{} images you have made this month.".format(compressions_this_month))
+
 
 def command_line():
     parser = argparse.ArgumentParser(prog='Timg', description='以 TinyPNG 为基础的图片压缩处理命令行工具。')
@@ -67,6 +74,7 @@ def command_line():
     if args.target:
         compress_target(args.target, args.create, args.recursion)
 
+
 def main():
     try:
         command_line()
@@ -74,6 +82,7 @@ def main():
         logger.error(err)
     except KeyboardInterrupt:
         logger.info("Bye~")
+
 
 if __name__ == "__main__":
     main()

@@ -1,9 +1,9 @@
 import os
 import shutil
 
-
 TYPE_LIST = ('.png', '.jpeg', '.mp4', '.jpg', '.gif')
 TOTAL_NUM = 0
+
 
 # 使用递归的方法来拷贝文件
 def copy_images(src, des):
@@ -18,6 +18,7 @@ def copy_images(src, des):
                 print("Current copy file num is:" + str(TOTAL_NUM))
         for d in dirs:
             return copy_images(os.path.join(root, d), des)
+
 
 def main():
     print("start!")
