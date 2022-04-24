@@ -66,3 +66,13 @@ python timg.py -i
 [自用脚本]用于递归的将某目录下的图片、视频文件复制到另一个目录中（不保留原目录结构）。
 
 此脚本仅为自用，原先用于将 Google Photo 备份的照片拷贝到一个目录下，而不是分散出一堆以日期命名的子目录。
+
+## get_git_log
+查询近一周项目管理路径下的所有项目 git log，并将其格式化打印，输入 C 回车即可复制。使用效果如下：
+```text
+# 学习空间项目
+1. 学习了 Python 的 3.10 的新语法
+2. 学习了Python的网络编程
+
+Press C to copy to the clipboard, Press Any Key to continue...
+```
